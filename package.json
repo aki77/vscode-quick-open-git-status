@@ -2,9 +2,9 @@
   "name": "quick-open-git-status",
   "displayName": "Quick Open Git Status",
   "description": "Quickly opening changes files.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "aki77",
-	"license": "MIT",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.55.0"
   },
