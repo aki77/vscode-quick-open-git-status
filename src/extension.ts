@@ -6,17 +6,30 @@ type FileStatusResultWithUri = FileStatusResult & {
   uri: Uri
 };
 
-const gitStatus = async (): Promise<ReadonlyArray<FileStatusResultWithUri>> => {
+const getActiveWorkspaceFolder = () => {
   if (!workspace.workspaceFolders) {
-    return [];
+    return null;
   }
-
+  let workspaceFolder = workspace.workspaceFolders[0];
   if (workspace.workspaceFolders.length > 1) {
-    window.showErrorMessage('Not support multiple workspaceFolders!');
+    const activeFile = window.activeTextEditor?.document.uri;
+    if (!activeFile) {
+      return null;
+    }
+    const ws = workspace.getWorkspaceFolder(activeFile);
+    if (!ws) {
+      return null;
+    }
+    workspaceFolder = ws;
+  }
+  return workspaceFolder;
+};
+
+const gitStatus = async (): Promise<ReadonlyArray<FileStatusResultWithUri>> => {
+  const workspaceFolder = getActiveWorkspaceFolder();
+  if (!workspaceFolder) {
     return [];
   }
-
-  const workspaceFolder = workspace.workspaceFolders[0];
   const git: SimpleGit = simpleGit(workspaceFolder.uri.fsPath);
   const { files } = await git.status();
 
